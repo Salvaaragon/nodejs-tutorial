@@ -1,0 +1,20 @@
+POST http://localhost:3001/api/tasklists Content-Type: application/json
+
+{
+	"name": "Nueva lista",
+	"description": "description",
+	"tasks": [
+        {
+		    "name": "test 1"
+	    },
+        {
+		    "name": "test 2"
+	    }
+    ]
+}
+
+###
+
+POST http://localhost:3001/api/tasklists Content-Type: application/json
+
+{}
