@@ -1,0 +1,7 @@
+POST http://localhost:3001/api/task
+Content-Type: application/json
+
+{
+	"description": "description",
+    "idList": "611a9406d1cf7706bbcd4367"
+}

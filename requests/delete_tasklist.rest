@@ -1,1 +1,1 @@
-DELETE http://localhost:3001/api/tasklists/1
+DELETE http://localhost:3001/api/tasklist/1

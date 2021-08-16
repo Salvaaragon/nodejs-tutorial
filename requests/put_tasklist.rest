@@ -1,0 +1,7 @@
+PUT http://localhost:3001/api/tasklist/611a8c61fc4ddc046a295f37
+Content-Type: application/json
+
+{
+	"name": "Nuevo nombre",
+	"description": "description nueva",
+}
