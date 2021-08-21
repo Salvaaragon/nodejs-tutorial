@@ -11,3 +11,7 @@ mongoose
   })
   .then(() => console.log('Database connected'))
   .catch((err) => console.error(err));
+
+process.on('uncaughtException', () => {
+  mongoose.connection.close();
+});

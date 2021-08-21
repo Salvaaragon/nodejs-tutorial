@@ -26,32 +26,28 @@ app.get('/api/tasklists', (request, response) => {
 });
 
 app.get('/api/tasks/:id', (request, response, next) => {
-  const id = request.params.id;
+  const { id } = request.params;
 
   List.findById(id)
     .then((lists) => {
-      if (lists) {
-        Task.populate(lists, { path: 'tasks' }, function (err, lists) {
+      if (lists)
+        return Task.populate(lists, { path: 'tasks' }, function (err, lists) {
           response.json(lists.tasks);
         });
-      } else {
-        response.status(404).json({ error: 'Not found' });
-      }
+      response.status(404).json({ error: 'Not found' });
     })
     .catch((err) => next(err));
 });
 
 app.get('/api/tasklist/:id', (request, response, next) => {
-  const id = request.params.id;
+  const { id } = request.params;
   List.findById(id)
     .then((list) => {
-      if (list) {
-        Task.populate(list, { path: 'tasks' }, function (err, list) {
+      if (list)
+        return Task.populate(list, { path: 'tasks' }, function (err, list) {
           response.json(list);
         });
-      } else {
-        response.status(404).json({ error: 'Not found' });
-      }
+      response.status(404).json({ error: 'Not found' });
     })
     .catch((err) => next(err));
 });
@@ -78,16 +74,12 @@ app.delete('/api/tasklist/:id', (request, response, next) => {
     .then((result) => {
       if (result) {
         const { tasks } = result;
-        Task.deleteMany({ _id: tasks }, (err) => {
-          if (err) {
-            response.status(400).end();
-          } else {
-            response.status(204).end();
-          }
+        return Task.deleteMany({ _id: tasks }, (error) => {
+          if (error) return response.status(400).end();
+          response.status(204).end();
         });
-      } else {
-        response.status(404).json({ error: 'Not found' });
       }
+      response.status(404).json({ error: 'Not found' });
     })
     .catch((error) => {
       next(error);
@@ -98,11 +90,8 @@ app.delete('/api/task/:id', (request, response, next) => {
   const { id } = request.params;
   Task.findByIdAndDelete(id)
     .then((result) => {
-      if (result) {
-        response.status(204).end();
-      } else {
-        response.status(404).json({ error: 'Not found' });
-      }
+      if (result) return response.status(204).end();
+      response.status(404).json({ error: 'Not found' });
     })
     .catch((error) => {
       next(error);
@@ -115,16 +104,12 @@ app.delete('/api/tasks/:id', (request, response, next) => {
     .then((result) => {
       if (result) {
         const { tasks } = result;
-        Task.deleteMany({ _id: tasks }, (err) => {
-          if (err) {
-            response.status(400).end();
-          } else {
-            response.status(204).end();
-          }
+        return Task.deleteMany({ _id: tasks }, (error) => {
+          if (error) return response.status(400).end();
+          response.status(204).end();
         });
-      } else {
-        response.status(404).json({ error: 'Not found' });
       }
+      response.status(404).json({ error: 'Not found' });
     })
     .catch((error) => {
       next(error);
@@ -168,31 +153,27 @@ app.post('/api/task', (request, response, next) => {
           completed: false,
         });
 
-        newTask
+        return newTask
           .save()
           .then((savedTask) => {
             List.updateOne(
               { _id: list._id },
               { $push: { tasks: savedTask._id } },
               function (error) {
-                if (error) {
-                  response.status(408).end();
-                } else {
-                  response.status(204).json(savedTask);
-                }
+                if (error) return response.status(408).end();
+                response.status(204).json(savedTask);
               },
             );
           })
           .catch((err) => next(err));
-      } else {
-        response.status(404).json({ error: 'Not found' });
       }
+      response.status(404).json({ error: 'Not found' });
     })
     .catch((err) => next(err));
 });
 
-app.use(handleErrors);
 app.use(notFound);
+app.use(handleErrors);
 
 const PORT = process.env.PORT || 3001;
 
